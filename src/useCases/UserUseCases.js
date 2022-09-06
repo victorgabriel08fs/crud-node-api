@@ -1,13 +1,21 @@
+import { AppError } from '../errors/AppError';
 import { prisma } from '../prisma/client';
 class UserUseCases {
     async store({ name, email }) {
-        const user = await prisma.user.create({
-            data: {
-                name, email
+
+        const userAlreadyExists = await prisma.user.findFirst({
+            where: {
+                email
             }
         });
 
+        const user = await prisma.user.create({
+            data: {
+                name: name, email: email
+            }
+        });
         return user;
+
     }
 
     async index() {
@@ -31,7 +39,13 @@ class UserUseCases {
     }
 
     async destroy(id) {
-        const user = await prisma.user.delete({
+        const user = await prisma.user.findUnique({
+            where: {
+                id
+            }
+        });
+
+        await prisma.user.delete({
             where: {
                 id
             }
@@ -46,7 +60,7 @@ class UserUseCases {
                 userId: id
             }
 
-        })
+        });
 
         return posts;
     }

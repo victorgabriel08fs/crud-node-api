@@ -43,4 +43,5 @@ class PostUseCases {
         return { deleted: true };
     }
 }
+
 export const postUseCases = new PostUseCases();
